@@ -14,16 +14,8 @@ public class PagingArea {
         this.pageList = new ArrayList<>();
     }
 
-    public Page get(int i) {
-        return pageList.get(i);
-    }
-
     public void add(Page page) {
         pageList.add(page);
-    }
-
-    public int size() {
-        return pageList.size();
     }
 
     public Page get(Page page) {
@@ -34,7 +26,4 @@ public class PagingArea {
         return pageList.contains(new Page(c));
     }
 
-    public void clear() {
-        pageList.clear();
-    }
 }

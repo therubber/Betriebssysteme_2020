@@ -39,12 +39,19 @@ public class Page {
         this.references += 1;
     }
 
+    /**
+     * Stops Page timer and ads a replacement
+     * To be used when a Page gets replaced in physical memory
+     */
     public void kill() {
         this.death = System.currentTimeMillis();
         Result.addLifetime(death - birth);
         Result.addReplacement();
     }
 
+    /**
+     * To be used when a Page that has already been replaced is written into physical memory again
+     */
     public void resetLifetime() {
         this.birth = System.currentTimeMillis();
         this.death = -1;

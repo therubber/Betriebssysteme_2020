@@ -1,7 +1,6 @@
 package de.leibmann.nfu;
 
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -9,8 +8,8 @@ import java.util.List;
  */
 public class Ram {
 
-    public Page[] pages; // Physischer Arbeitsspeicher mit begrenzter Groeße
-    public PagingArea pagingArea; // "Festplatte" des Recheners zum Auslagern von Pages
+    public Page[] pages; // Physical memory with set size (Config)
+    public PagingArea pagingArea; // Paging Area (Hard drive)
 
     public Ram(PagingArea pagingArea) {
         this.pagingArea = pagingArea;
@@ -29,19 +28,28 @@ public class Ram {
         replace(toReplace, page);
     }
 
-    public void write(List<Page> pageSet) {
+    /**
+     * Writes a list of pages to the memory
+     * @param pageList List of pages to be added to memory
+     */
+    public void write(List<Page> pageList) {
         int i = 0;
         while(i < pages.length && pages[i] == null) {
-            pages[i] = pageSet.get(i);
+            pages[i] = pageList.get(i);
             i++;
         }
-        if(pageSet.size() > pages.length) {
-            for (int j = i; j < pageSet.size(); j++) {
-                pagingArea.add(pageSet.get(j));
+        if(pageList.size() > pages.length) {
+            for (int j = i; j < pageList.size(); j++) {
+                pagingArea.add(pageList.get(j));
             }
         }
     }
 
+    /**
+     * Reads a Page from memory
+     * @param c char of page to be read
+     * @return Page requested
+     */
     public Page read(char c) {
         Page page = new Page(c);
         for(Page p : pages) {
@@ -64,6 +72,10 @@ public class Ram {
         return null;
     }
 
+    /**
+     * Access Page without returning it
+     * @param c char of page to be accessed
+     */
     public void access(char c) {
         for (Page page : pages) {
             if (page.getData() == c) {
@@ -80,6 +92,10 @@ public class Ram {
         }
     }
 
+    /**
+     * Gets the least frequently referenced Page from physical memory
+     * @return Page with the lowest reference counter
+     */
     public Page getLeastReferenced() {
         Page leastReferenced = pages[0];
         int lowestReferences = leastReferenced.getReferences();
@@ -93,6 +109,11 @@ public class Ram {
 
     }
 
+    /**
+     * Replaces a page in physical ram and saves it to PagingArea
+     * @param toReplace Page to be replaced
+     * @param replaceWith Page to replace page with
+     */
     private void replace(Page toReplace, Page replaceWith) {
         for(int i = 0; i < pages.length; i++) {
             if(pages[i].equals(toReplace)) {
@@ -105,10 +126,10 @@ public class Ram {
     }
 
     /**
-     * Überprüft ob der RAM eine Page mit einem bestimmten char enthält
-     * Erhöht aus Modellierungsgründen nicht den Zugriffszähler
-     * @param c char nach dem gesucht wird
-     * @return boolean ob paging area und Speicher eine Page mit dem char enthalten
+     * Checks if physical memory contains a page with parameter char
+     * INFO: Does not raise reference counter for modelling reasons
+     * @param c char ram is searched for
+     * @return boolean whether physical memory contains a page with the character as data
      */
     public boolean contains(char c) {
         for (Page page : pages) {
@@ -119,6 +140,11 @@ public class Ram {
         return pagingArea.contains(c);
     }
 
+    /**
+     * Like contains() -> Page as parameter instead of char
+     * @param page Page ram is searched for
+     * @return boolean whether physical memory contains parameter page
+     */
     public boolean memoryContains(Page page) {
         for(Page p : pages) {
             if(page.equals(p)) {
