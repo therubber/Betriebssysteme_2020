@@ -20,7 +20,6 @@ public class Executor {
 
         executor.printData(ram);
         Result.showResults();
-
     }
 
     List<Page> generateData(int count) {

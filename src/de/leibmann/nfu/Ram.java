@@ -16,6 +16,9 @@ public class Ram {
         this.pages = new Page[Config.getRamSize()];
     }
 
+    /**
+     * @param page Page to write to Memory
+     */
     public void write(Page page) {
         for(int i = 0; i < pages.length - 1; i++) {
             if(pages[i] == null) {
@@ -106,7 +109,6 @@ public class Ram {
             }
         }
         return leastReferenced;
-
     }
 
     /**
@@ -132,10 +134,8 @@ public class Ram {
      * @return boolean whether physical memory contains a page with the character as data
      */
     public boolean contains(char c) {
-        for (Page page : pages) {
-            if (page.getData() == c) {
-                return true;
-            }
+        if (memoryContains(new Page(c))) {
+            return true;
         }
         return pagingArea.contains(c);
     }
