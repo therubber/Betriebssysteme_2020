@@ -20,8 +20,8 @@ public class Ram {
      * @param page Page to write to Memory
      */
     public void write(Page page) {
-        for(int i = 0; i < pages.length - 1; i++) {
-            if(pages[i] == null) {
+        for (int i = 0; i < pages.length - 1; i++) {
+            if (pages[i] == null) {
                 pages[i] = page;
                 return;
             }
@@ -33,15 +33,16 @@ public class Ram {
 
     /**
      * Writes a list of pages to the memory
+     *
      * @param pageList List of pages to be added to memory
      */
     public void write(List<Page> pageList) {
         int i = 0;
-        while(i < pages.length && pages[i] == null) {
+        while (i < pages.length && pages[i] == null) {
             pages[i] = pageList.get(i);
             i++;
         }
-        if(pageList.size() > pages.length) {
+        if (pageList.size() > pages.length) {
             for (int j = i; j < pageList.size(); j++) {
                 pagingArea.add(pageList.get(j));
             }
@@ -50,26 +51,25 @@ public class Ram {
 
     /**
      * Reads a Page from memory
+     *
      * @param c char of page to be read
      * @return Page requested
      */
     public Page read(char c) {
         Page page = new Page(c);
-        for(Page p : pages) {
+        for (Page p : pages) {
             if (page.equals(p)) {
                 p.addReference();
                 return p;
             }
         }
-        for(Page paPage : pagingArea.pageList) {
+        for (Page paPage : pagingArea.pageList) {
             if (page.equals(paPage)) {
                 Page toReplace = getLeastReferenced();
-                if (toReplace.getReferences() < paPage.getReferences()) {
-                    pagingArea.add(toReplace);
-                    paPage.addReference();
-                    replace(toReplace, paPage);
-                    return paPage;
-                }
+                pagingArea.add(toReplace);
+                paPage.addReference();
+                replace(toReplace, paPage);
+                return paPage;
             }
         }
         return null;
@@ -77,6 +77,7 @@ public class Ram {
 
     /**
      * Access Page without returning it
+     *
      * @param c char of page to be accessed
      */
     public void access(char c) {
@@ -85,24 +86,23 @@ public class Ram {
                 page.addReference();
             }
         }
-        if(pagingArea.contains(c)) {
+        if (pagingArea.contains(c)) {
             pagingArea.get(new Page(c)).addReference();
             Page leastReferenced = getLeastReferenced();
-            if(leastReferenced.getReferences() < pagingArea.get(new Page(c)).getReferences()) {
-                pagingArea.add(leastReferenced);
-                replace(leastReferenced, pagingArea.get(new Page(c)));
-            }
+            pagingArea.add(leastReferenced);
+            replace(leastReferenced, pagingArea.get(new Page(c)));
         }
     }
 
     /**
      * Gets the least frequently referenced Page from physical memory
+     *
      * @return Page with the lowest reference counter
      */
     public Page getLeastReferenced() {
         Page leastReferenced = pages[0];
         int lowestReferences = leastReferenced.getReferences();
-        for(Page page : pages) {
+        for (Page page : pages) {
             if (page.getReferences() <= lowestReferences) {
                 leastReferenced = page;
                 lowestReferences = page.getReferences();
@@ -113,12 +113,13 @@ public class Ram {
 
     /**
      * Replaces a page in physical ram and saves it to PagingArea
-     * @param toReplace Page to be replaced
+     *
+     * @param toReplace   Page to be replaced
      * @param replaceWith Page to replace page with
      */
     private void replace(Page toReplace, Page replaceWith) {
-        for(int i = 0; i < pages.length; i++) {
-            if(pages[i].equals(toReplace)) {
+        for (int i = 0; i < pages.length; i++) {
+            if (pages[i].equals(toReplace)) {
                 pages[i] = replaceWith;
                 replaceWith.resetLifetime();
                 pagingArea.pageList.remove(replaceWith);
@@ -130,6 +131,7 @@ public class Ram {
     /**
      * Checks if physical memory contains a page with parameter char
      * INFO: Does not raise reference counter for modelling reasons
+     *
      * @param c char ram is searched for
      * @return boolean whether physical memory contains a page with the character as data
      */
@@ -142,12 +144,13 @@ public class Ram {
 
     /**
      * Like contains() -> Page as parameter instead of char
+     *
      * @param page Page ram is searched for
      * @return boolean whether physical memory contains parameter page
      */
     public boolean memoryContains(Page page) {
-        for(Page p : pages) {
-            if(page.equals(p)) {
+        for (Page p : pages) {
+            if (page.equals(p)) {
                 return true;
             }
         }
